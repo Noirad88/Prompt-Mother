@@ -1,0 +1,13 @@
+{
+  "name": "mother",
+  "version": "1.0.0",
+  "description": "firstBot",
+  "main": "bot.js",
+  "author": "darionmccoy",
+  "dependencies": {
+    "discord.io": "http://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "^11.5.1",
+    "sentencer": "file:sentencer",
+    "winston": "^3.2.1"
+  }
+}
