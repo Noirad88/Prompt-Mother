@@ -1,1 +1,1 @@
-Discord bot which announces a new theme (random sentence) every month.
+Discord bot that announces a new theme (random sentence) every month.
