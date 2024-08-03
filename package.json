@@ -1,10 +1,11 @@
 {
   "name": "mother",
   "version": "1.0.0",
-  "description": "firstBot",
+  "description": "Discord bot that announces a new theme (random sentence) every month.",
   "main": "bot.js",
   "author": "darionmccoy",
   "dependencies": {
+    "datejs": "^1.0.0-rc3",
     "discord.io": "http://github.com/woor/discord.io/tarball/gateway_v6",
     "discord.js": "^11.5.1",
     "sentencer": "file:sentencer",
