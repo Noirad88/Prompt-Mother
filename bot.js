@@ -16,10 +16,9 @@ const TIME_HOUR = 3600000
 
 // Initialize Discord client
 var client = new Discord.Client()
-client.login(auth.token)
-
-var channelID = client.id 
 var targetChannel = null
+
+client.login(auth.token)
 
 
 function updatePrompt(){
@@ -61,10 +60,8 @@ client.on('ready', () => {
 	 targetChannel = client.channels.get(CHANNEL_KEY)
 
 	 setInterval(function(){
-
 	 	//check to see if the date is the 1st
 	 	checkDate()
-
 	 	//check the date every hour
 	 }, TIME_HOUR)
 })
