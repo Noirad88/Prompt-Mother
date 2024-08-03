@@ -1,17 +1,18 @@
-//TO DO
-//
+const dateMaster = require('node_modules//datejs-master')
+const Sentencer = require('node_modules//sentencer');
+const Discord = require('node_modules/discord.js');
+const logger = require('node_modules/winston');
+const auth = require('auth.json');
 
-var dateMaster = require('./datejs-master')
-var Sentencer = require('./sentencer');
-const Discord = require('discord.js');
-var logger = require('winston');
-var auth = require('./auth.json');
-//var targetDate = new Date().set({day: 1})
-//targetDate.addMonths(1)
 targetDate = new Date().set({day: 1})
 targetDate.addMonths(1)
-var todayDate = new Date()
 
+//channel to target
+const CHANNEL_KEY = undefined
+//only admin can communicate with bot
+const ADMIN_ID = undefined
+const BOT_TRIGGER_KEY = "!mother"
+const TIME_HOUR = 3600000
 
 // Initialize Discord client
 var client = new Discord.Client()
@@ -23,57 +24,41 @@ var targetChannel = null
 
 function updatePrompt(){
 
-	var NewPrompt = Sentencer.make("{{ an_adjective }} {{ noun }}.")
-    targetChannel.send('NEW MONTHLY PROMPT: ' + NewPrompt)
-    targetChannel.setTopic('CURRENT PROMPT: ' + NewPrompt + '  |  Make anything you want! Art, music, writing, etc.')
+	let NewPrompt = Sentencer.make("{{ an_adjective }} {{ noun }}.")
+	let prompt_text = 'NEW MONTHLY PROMPT: ' + NewPrompt
+	let topic_text = 'CURRENT PROMPT: ' + NewPrompt + '  |  Make anything you want! Art, music, writing, etc.'
+
+    targetChannel.send(prompt_text)
+    targetChannel.setTopic(topic_text)
 
     //set the new target date a month ahead on the 1st
 	targetDate = new Date().set({day: 1})
 	targetDate.addMonths(1)
-	console.log("todays date: " + todayDate)
-	console.log("target date: " + targetDate)
 
 }
 
 function processCommand(receivedMessage) {
+    let fullCommand = receivedMessage.content.substr(7)
+    let splitCommand = fullCommand.split(" ")
+    let primaryCommand = splitCommand[1]
 
-    let fullCommand = receivedMessage.content.substr(7) // Remove '!mother'
-    let splitCommand = fullCommand.split(" ") // Split the message up in to pieces for each space
-    let primaryCommand = splitCommand[1] // The second word is the command
-
-    console.log("Command received: " + primaryCommand)
-
+	//if we want to force a prompt update
     if (primaryCommand == "force") {
-
-    	console.log("Command is 'force'")
         updatePrompt()
     } 
-
 }
 
 function checkDate(){
-
-		todayDate = new Date()
-		console.log("checking date ...")
-		console.log("todays date: " + todayDate.toString("M/d/yyyy"))
-    	console.log("target date: " + targetDate.toString("M/d/yyyy"))
-
-
+		let todayDate = new Date()
 	    //check if todays date is the target date
+		//if so, update prompt
 	    if (todayDate.toString("M/d/yyyy") == targetDate.toString("M/d/yyyy")) {
-
 	    	updatePrompt()
-
 	    }
-
 }
 
 client.on('ready', () => {
-
-	//general for testing
-	 //targetChannel = client.channels.get('266722720698466304')
-	 //monthly-art-challenge in smack chat
-	 targetChannel = client.channels.get('611729389834731560')
+	 targetChannel = client.channels.get(CHANNEL_KEY)
 
 	 setInterval(function(){
 
@@ -81,30 +66,20 @@ client.on('ready', () => {
 	 	checkDate()
 
 	 	//check the date every hour
-	 }, 3600 * 1000)
-
+	 }, TIME_HOUR)
 })
 
 client.on('message', (receivedMessage) => {
-
     // Prevent bot from responding to its own messages
     if (receivedMessage.author == client.user) {
-
         return
-
     }
-
-    console.log("User is" + receivedMessage.author.id)
 
     // only allow eric and I to communicate with mother
-    if (receivedMessage.content.startsWith("!mother") && (receivedMessage.author.id == '266699996559179776'||receivedMessage.author.id == '301054774810378241')) {
+    if (receivedMessage.content.startsWith(BOT_TRIGGER_KEY) && receivedMessage.author.id == ADMIN_ID) {
 
     	if (receivedMessage.channel.type == "dm"){
-
         	processCommand(receivedMessage)
-
     	}
-
     }
-
 })
